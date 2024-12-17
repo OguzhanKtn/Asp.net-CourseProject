@@ -15,7 +15,26 @@ namespace Udemy.Web.Extensions
            Services.AddScoped<IUnitOfWork,UnitOfWork>();
            Services.AddScoped<ICourseRepository,CourseRepository>();
            Services.AddScoped<CourseService>();
+           Services.AddScoped<UserService>();
            Services.AddHttpContextAccessor();
+        }
+
+        public static void AddCookies(this IServiceCollection Services)
+        {
+            Services.ConfigureApplicationCookie(opt =>
+            {
+                var cookieBuilder = new CookieBuilder
+                {
+                    Name = "CourseAppCookie"
+                };     
+
+                opt.LoginPath = new PathString("/Auth/SignIn");
+                opt.LogoutPath = new PathString("/Auth/Logout");
+                opt.AccessDeniedPath = new PathString("/Auth/AccessDenied");
+                opt.Cookie = cookieBuilder;
+                opt.ExpireTimeSpan = TimeSpan.FromDays(30);
+                opt.SlidingExpiration = true;
+            });
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Udemy.Web.Models.Services
 
             var newCourse = new Course()
             {
+                Id = Guid.NewGuid(),
                 Title = model.Title,
                 ShortDescription = model.ShortDescription,
                 Description = model.Description,

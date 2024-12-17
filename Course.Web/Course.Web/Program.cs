@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Udemy.Web.Extensions;
 using Udemy.Web.Models.Repository;
 
@@ -14,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddServices();
+builder.Services.AddCookies();
 
 var app = builder.Build();
 
@@ -26,8 +26,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

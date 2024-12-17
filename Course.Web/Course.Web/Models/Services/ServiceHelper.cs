@@ -1,5 +1,7 @@
-﻿using System.Collections;
-using System.Net;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Collections;
+using Udemy.Web.Models.Repository.Entities;
+using Udemy.Web.Models.Services.ViewModels.Auth;
 
 namespace Udemy.Web.Models.Services
 {
@@ -17,6 +19,31 @@ namespace Udemy.Web.Models.Services
 
             var result = processFunc(data);
             return ServiceResult<TResult>.Success(result);
+        }
+
+        public static ServiceResult SuccessOrFail(IdentityResult result,string message)
+        {
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(x => x.Description).ToList();
+                return ServiceResult.Error(errors);
+            }
+            return ServiceResult.Success(message);
+        }
+
+        public static async Task<ServiceResult> LoginProcess(AppUser user,bool passwordCheck,SignInManager<AppUser> manager, SignInViewModel model)
+        {
+            if(user is null)
+            {
+                return ServiceResult.Error("Email or Password is wrong!");
+            }
+            if (!passwordCheck) 
+            {
+                return ServiceResult.Error("Email or Password is wrong!");
+            }
+            await manager.SignInAsync(user, model.RememberMe);
+
+            return ServiceResult.Success("User signed in successfully!");
         }
     }
 }

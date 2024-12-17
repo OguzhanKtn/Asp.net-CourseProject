@@ -9,7 +9,6 @@ namespace Udemy.Web.Models.Repository.Configurations
         public void Configure(EntityTypeBuilder<Course> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Title).HasMaxLength(300).IsRequired();
             builder.Property(x => x.Price).HasColumnType("decimal(18,2)").IsRequired();
             builder.Property(x => x.ShortDescription).HasMaxLength(300).IsRequired();
