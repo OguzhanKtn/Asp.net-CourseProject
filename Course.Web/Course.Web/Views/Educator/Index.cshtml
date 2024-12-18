@@ -1,4 +1,54 @@
-﻿@{
+﻿@model IEnumerable<CourseViewModel>
+@{
     ViewData["Title"] = "Courses";
     Layout = "~/Views/Shared/_Educator_Layout.cshtml";
+    int count = 0;
 }
+<h2>All Courses</h2>
+
+@if(!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>Kayıtlı kurs bulunamamıştır.</p>
+    </div>
+}
+else
+{
+<table class="table table-striped">
+    <thead>
+        <th scope="col">#</th>
+        <th scope="col">Picture</th>
+        <th scope="col">Category</th>
+        <th scope="col">Title</th>
+        <th scope="col">Short Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Created Date</th>
+        <th scope="col">Updated Date</th>
+        <th scope="col">Is Active</th>
+        <th scope="col">Is Deleted</th>
+    </thead>
+    <tbody>
+        @foreach (var course in Model)
+        {
+            count++;
+            <tr>
+                <th>@count</th>
+                <td>
+                    <img class="img-thumbnail" style="width:200px; height:100px;" src="/pictures/courses/@course.PictureUrl" />
+                </td>
+                <td>@course.CategoryName</td>
+                <td>@course.Title</td>
+                <td>@course.ShortDescription</td>
+                <td>@course.Price</td>
+                <td>@course.CreatedAt</td>
+                <td>@course.GetUpdatedAt()</td>
+                <td>@course.IsActive</td>
+                <td>@course.IsDeleted</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+}
+
+

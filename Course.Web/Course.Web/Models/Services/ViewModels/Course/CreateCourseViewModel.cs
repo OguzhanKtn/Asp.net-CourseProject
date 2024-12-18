@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Udemy.Web.Models.Services.ViewModels.Course
@@ -13,6 +14,8 @@ namespace Udemy.Web.Models.Services.ViewModels.Course
         public decimal Price { get; set; }
         public int TotalHour { get; set; }
         public int CategoryId { get; set; }
+
+        [ValidateNever]
         public SelectList CategoryList { get; set; }
     }
 }

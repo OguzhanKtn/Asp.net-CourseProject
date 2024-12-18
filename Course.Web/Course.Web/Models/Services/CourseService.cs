@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.CourseRepository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
@@ -8,7 +10,7 @@ using Udemy.Web.Models.Services.ViewModels.Course;
 
 namespace Udemy.Web.Models.Services
 {
-    public class CourseService(ICourseRepository repository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork,UserManager<AppUser> userManager)
+    public class CourseService(IGenericRepository<Category> categoryRepository,ICourseRepository courseRepository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork,UserManager<AppUser> userManager)
     {
         public async Task<ServiceResult> CreateCourseAsync(CreateCourseViewModel model)
         {
@@ -41,37 +43,63 @@ namespace Udemy.Web.Models.Services
                 newCourse.PictureUrl = fileName;
             }
 
-            await repository.AddAsync(newCourse);
+            await courseRepository.AddAsync(newCourse);
             await unitOfWork.CommitAsync();
 
             return ServiceResult.Success("Kurs başarıyla oluşturulmuştur");
+        }
+
+        public async Task<CreateCourseViewModel> LoadCreateCourseAsync()
+        {
+            var createCourse = new CreateCourseViewModel();
+            var categories = await categoryRepository.GetAllAsync();
+
+            createCourse.CategoryList = new SelectList(categories,"Id","Name");
+
+            return createCourse;
+        }
+
+        public async Task<CreateCourseViewModel> LoadCreateCourseAsync(CreateCourseViewModel model)
+        {
+            var categories = await categoryRepository.GetAllAsync();
+
+            model.CategoryList = new SelectList(categories, "Id", "Name");
+
+            return model;
         }
 
         public async Task<ServiceResult<IEnumerable<CourseViewModel>>> GetAllByUserIdAsync()
         {
             var userId = contextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
                 
-            var courses = await repository.GetCoursesByUserIdAsync(Guid.Parse(userId));
+            var courses = await courseRepository.GetCoursesByUserIdAsync(Guid.Parse(userId));
+
+            if (!courses.Any())
+            {
+                return ServiceResult<IEnumerable<CourseViewModel>>.Success(new List<CourseViewModel>());
+            }
 
             return ServiceHelper.CheckIfNullOrNot
             (
                courses,
-               data => courses.Select(course => new CourseViewModel
+               data => data.Select(course => new CourseViewModel
                {
                    Title = course.Title,
+                   IsActive = true,
                    ShortDescription = course.ShortDescription,
                    PictureUrl = course.PictureUrl,
-                   Price = course.Price,
+                   Price = course.Price.ToString("C"),
                    TotalHour = course.TotalHour,
-                   CreatedAt = course.CreatedAt,
+                   CreatedAt = course.CreatedAt.ToLongDateString(),
                    CategoryName = course.Category.Name
+                   
                })
             );
         }
 
         public async Task<ServiceResult<IEnumerable<CourseViewModel>>> GetAllAsync()
         {
-            var courses = await repository.GetCoursesAsync();
+            var courses = await courseRepository.GetCoursesAsync();
                
             var userIds = courses.Select(c => c.CreatedBy.ToString()).Distinct().ToList();
             var users = await userManager.Users
@@ -85,9 +113,9 @@ namespace Udemy.Web.Models.Services
                 Title = course.Title,
                 ShortDescription = course.ShortDescription,
                 PictureUrl = course.PictureUrl,
-                Price = course.Price,
+                Price = course.Price.ToString("C"),
                 TotalHour = course.TotalHour,
-                CreatedAt = course.CreatedAt,
+                CreatedAt = course.CreatedAt.ToLongDateString(),
                 EducatorName = userDictionary.ContainsKey(course.CreatedBy)
                     ? userDictionary[course.CreatedBy]
                     : "Unknown Educator",

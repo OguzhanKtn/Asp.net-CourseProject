@@ -7,12 +7,17 @@
         public string ShortDescription { get; set; } = default!;
         public string EducatorName { get; set; } = default!;
         public string? PictureUrl { get; set; }
-        public decimal Price { get; set; }
+        public string Price { get; set; } = default!;
         public int TotalHour { get; set; }
         public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public string CreatedAt { get; set; } = default!;
+        public string? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public string CategoryName { get; set; } = default!;
+
+        public string GetUpdatedAt()
+        {
+            return string.IsNullOrEmpty(UpdatedAt) ? "-" : UpdatedAt;
+        }
     }
 }

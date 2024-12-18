@@ -1,4 +1,4 @@
-﻿
+﻿@model CreateCourseViewModel
 @{
     ViewData["Title"] = "CreateCourse";
     Layout = "~/Views/Shared/_Educator_Layout.cshtml";
@@ -6,3 +6,48 @@
 
 <h1>CreateCourse</h1>
 
+<form asp-action="CreateCourse" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryList"></select>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ShortDescription" class="form-label"></label>
+        <input asp-for="ShortDescription" class="form-control" />
+        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PictureFile" class="form-label"></label>
+        <input asp-for="PictureFile" type="file" class="form-control" />
+        <span asp-validation-for="PictureFile" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="LearningGoal" class="form-label"></label>
+        <input asp-for="LearningGoal" class="form-control" />
+        <span asp-validation-for="LearningGoal" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="TotalHour" class="form-label"></label>
+        <input asp-for="TotalHour" class="form-control" />
+        <span asp-validation-for="TotalHour" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>

@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Udemy.Web.Models.Services;
+using Udemy.Web.Models.Services.ViewModels.Course;
 
 namespace Udemy.Web.Controllers
 {
-    public class EducatorController(CourseService courseService) : Controller
+    [Authorize(Roles = "educator")]
+    public class EducatorController(CourseService courseService) : BaseController
     {
         public async Task<IActionResult> Index()
         {
@@ -13,7 +16,29 @@ namespace Udemy.Web.Controllers
 
         public async Task<IActionResult> CreateCourse()
         {
-            return View();
+            return View(await courseService.LoadCreateCourseAsync());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCourse(CreateCourseViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await courseService.LoadCreateCourseAsync(model);
+                return View(model);
+            }
+
+            var result = await courseService.CreateCourseAsync(model);
+            SuccessOrFail(result,"Course created successfully!");
+
+            if (result.IsFail)
+            {
+                await courseService.LoadCreateCourseAsync(model);
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
+
         }
     }
 }
