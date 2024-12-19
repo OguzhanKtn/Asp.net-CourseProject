@@ -4,6 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = default!;
+        public string Description { get; set; } = default!;
         public string ShortDescription { get; set; } = default!;
         public string EducatorName { get; set; } = default!;
         public string? PictureUrl { get; set; }

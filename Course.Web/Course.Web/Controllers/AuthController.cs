@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Services;
 using Udemy.Web.Models.Services.ViewModels.Auth;
 
 namespace Udemy.Web.Controllers
 {
-    public class AuthController(UserService userService) : BaseController
+    public class AuthController(UserService userService,SignInManager<AppUser> signInManager) : BaseController
     {
         public IActionResult SignIn()
         {
@@ -50,6 +52,13 @@ namespace Udemy.Web.Controllers
             }
 
             return RedirectToAction("SignIn", "Auth");
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

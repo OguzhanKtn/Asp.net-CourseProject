@@ -6,5 +6,6 @@ namespace Udemy.Web.Models.Repository.CourseRepository
     {
        Task<IEnumerable<Course>> GetCoursesByUserIdAsync(Guid userId);
        Task<IEnumerable<Course>> GetCoursesAsync();
+       Task<Course?> GetCourseByIdAsync(Guid id);
     }
 }

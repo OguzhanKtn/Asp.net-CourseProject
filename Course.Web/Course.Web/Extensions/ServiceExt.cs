@@ -29,7 +29,7 @@ namespace Udemy.Web.Extensions
                 };     
 
                 opt.LoginPath = new PathString("/Auth/SignIn");
-                opt.LogoutPath = new PathString("/Auth/Logout");
+                opt.LogoutPath = new PathString("/Auth/SignOut");
                 opt.AccessDeniedPath = new PathString("/Auth/AccessDenied");
                 opt.Cookie = cookieBuilder;
                 opt.ExpireTimeSpan = TimeSpan.FromDays(30);

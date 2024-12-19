@@ -21,6 +21,19 @@ namespace Udemy.Web.Models.Services
             return ServiceResult<TResult>.Success(result);
         }
 
+        public static ServiceResult<TResult> CheckIfNullOrNot<T, TResult>(
+          T data,
+          TResult result
+          )
+        {
+            if (data == null || (data is ICollection collection && collection.Count == 0))
+            {
+                return ServiceResult<TResult>.Error("Not found !");
+            }
+
+            return ServiceResult<TResult>.Success(result);
+        }
+
         public static ServiceResult SuccessOrFail(IdentityResult result,string message)
         {
             if (!result.Succeeded)

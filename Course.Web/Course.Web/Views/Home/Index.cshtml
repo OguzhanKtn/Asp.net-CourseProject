@@ -1,8 +1,29 @@
-﻿@{
+﻿@model IEnumerable<CourseViewModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h2>All Courses</h2>
 </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach(var item in Model)
+        {
+         <div class="col">
+                <div class="card h-100">
+                    <img src="/pictures/courses/@item.PictureUrl" class="card-img-top" alt="@item.Title">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.ShortDescription</p>
+                        <p class="card-text"><small class="text-muted">Instructor : @item.EducatorName</small></p>
+                        <p class="card-text"><strong class="text-muted">@item.Price</strong></p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="course" asp-action="detail" asp-route-id="@item.Id" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+         </div>   
+        }      
+    </div>

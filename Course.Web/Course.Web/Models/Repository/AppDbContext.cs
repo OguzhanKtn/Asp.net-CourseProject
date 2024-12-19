@@ -17,6 +17,8 @@ namespace Udemy.Web.Models.Repository
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            builder.Entity<Course>().HasQueryFilter(p => p.IsActive == true && p.IsDeleted == false);
+
             base.OnModelCreating(builder);
         }
     }

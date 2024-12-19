@@ -14,5 +14,10 @@ namespace Udemy.Web.Models.Repository.CourseRepository
         {
            return await _context.Courses.Include(x => x.Category).Where(x => x.CreatedBy == userId).OrderByDescending(x => x.CreatedAt).ToListAsync();
         }
+
+        public async Task<Course?> GetCourseByIdAsync(Guid id)
+        {
+            return await _context.Courses.Include(x => x.Category).Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
     }
 }

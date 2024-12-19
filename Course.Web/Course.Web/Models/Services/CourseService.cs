@@ -24,6 +24,7 @@ namespace Udemy.Web.Models.Services
                 Description = model.Description,
                 LearningGoal = model.LearningGoal,
                 Price = model.Price,
+                IsActive = true,
                 TotalHour = model.TotalHour,
                 CategoryId = model.CategoryId,
                 CreatedAt = DateTime.Now,
@@ -84,6 +85,7 @@ namespace Udemy.Web.Models.Services
                courses,
                data => data.Select(course => new CourseViewModel
                {
+                   Id = course.Id,
                    Title = course.Title,
                    IsActive = true,
                    ShortDescription = course.ShortDescription,
@@ -97,10 +99,39 @@ namespace Udemy.Web.Models.Services
             );
         }
 
+        public async Task<ServiceResult<CourseViewModel>> GetCourseByIdAsync( Guid id)
+        {
+            var course = await courseRepository.GetCourseByIdAsync( id );
+
+            var user = await userManager.FindByIdAsync(course.CreatedBy.ToString());
+
+            var courseModel = new CourseViewModel
+            {
+                Id = course.Id,
+                Title = course.Title,
+                IsActive = true,
+                Description = course.Description,
+                ShortDescription = course.ShortDescription,
+                PictureUrl = course.PictureUrl,
+                Price = course.Price.ToString("C"),
+                TotalHour = course.TotalHour,
+                CreatedAt = course.CreatedAt.ToLongDateString(),
+                EducatorName = user!.GetFullName,
+                CategoryName = course.Category.Name
+            };
+
+            return ServiceHelper.CheckIfNullOrNot(course,courseModel);
+        }
+
         public async Task<ServiceResult<IEnumerable<CourseViewModel>>> GetAllAsync()
         {
             var courses = await courseRepository.GetCoursesAsync();
-               
+
+            if (!courses.Any())
+            {
+                return ServiceResult<IEnumerable<CourseViewModel>>.Success(new List<CourseViewModel>());
+            }
+
             var userIds = courses.Select(c => c.CreatedBy.ToString()).Distinct().ToList();
             var users = await userManager.Users
                 .Where(u => userIds.Contains(u.Id.ToString()))
@@ -110,6 +141,7 @@ namespace Udemy.Web.Models.Services
 
             return ServiceHelper.CheckIfNullOrNot(courses, data => data.Select(course => new CourseViewModel
             {
+                Id = course.Id,
                 Title = course.Title,
                 ShortDescription = course.ShortDescription,
                 PictureUrl = course.PictureUrl,

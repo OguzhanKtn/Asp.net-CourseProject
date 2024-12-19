@@ -1,0 +1,31 @@
+﻿@model CourseViewModel
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">@Model.Title</h1>
+            <p><strong>Educator:</strong> @Model.EducatorName</p>
+            <p><strong>Category:</strong> @Model.CategoryName</p>
+            <p><strong>Total Hours:</strong> @Model.TotalHour</p>
+            <p><strong>Created At:</strong> @Model.CreatedAt</p>
+            <p><em>@Model.ShortDescription</em></p>
+            <p class="mt-3">@Model.Description</p>           
+        </div>
+
+        <div class="col-md-4">
+           <div class="card">
+                <img src="/pictures/courses/@Model.PictureUrl" alt="@Model.Title" class="rounded">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Price</h5>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-cart3"> Add to cart</i>
+                    </button>
+                </div>
+           </div>          
+        </div>
+    </div>
+</div>
+
