@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model BasketViewModel
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sepet Listesi -->
+        <div class="col-md-8">
+            <h3 class="mb-4">Your Basket</h3>
+            @if (Model.Items != null && Model.Items.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var item in Model.Items)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                @if (!string.IsNullOrEmpty(item.PictureFile))
+                                {
+                                    <img src="/pictures/courses/@item.PictureFile" class="img-thumbnail me-3" style="width: 100px; height: auto;" alt="@item.Name">
+                                }
+                                <div>
+                                    <h5 class="mb-1">@item.Name</h5>
+                                    <p class="mb-0 text-muted">Price: @item.Price.ToString("C")</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">@item.Price.ToString("C")</span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    Your basket is empty!
+                </div>
+            }
+        </div>
+
+        <!-- Toplam Fiyat -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Price</h5>
+                    <p class="card-text fs-3 fw-bold">@Model.TotalPrice.ToString("C")</p>
+                    <a href="#" class="btn btn-success btn-lg w-100 mt-3">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

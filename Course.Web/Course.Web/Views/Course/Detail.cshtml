@@ -20,9 +20,9 @@
                 <img src="/pictures/courses/@Model.PictureUrl" alt="@Model.Title" class="rounded">
                 <div class="card-body">
                     <h5 class="card-title">@Model.Price</h5>
-                    <button class="btn btn-primary">
+                    <a role="button" class="btn btn-primary" asp-controller="Basket" asp-action="AddBasketItem" asp-route-id ="@Model.Id">
                         <i class="bi bi-cart3"> Add to cart</i>
-                    </button>
+                    </a>
                 </div>
            </div>          
         </div>

@@ -1,4 +1,5 @@
-﻿using Udemy.Web.Models.Repository;
+﻿using Udemy.Web.Caching;
+using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.CourseRepository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
@@ -14,9 +15,17 @@ namespace Udemy.Web.Extensions
            Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
            Services.AddScoped<IUnitOfWork,UnitOfWork>();
            Services.AddScoped<ICourseRepository,CourseRepository>();
+           Services.AddScoped<ICacheService,DistributedCacheService>();
            Services.AddScoped<CourseService>();
+           Services.AddScoped<BasketService>();
            Services.AddScoped<UserService>();
            Services.AddHttpContextAccessor();
+           Services.AddMemoryCache();
+           Services.AddStackExchangeRedisCache(x =>
+           {
+               x.Configuration = "localhost:6379";
+           });
+           Services.AddDistributedMemoryCache();
         }
 
         public static void AddCookies(this IServiceCollection Services)
