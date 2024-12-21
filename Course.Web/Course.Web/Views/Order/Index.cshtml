@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model OrderViewModel
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Basket Details -->
+        <div class="col-md-6">
+            <h3>Sepet Detayları</h3>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @if (Model.Basket.Items != null && Model.Basket.Items.Any())
+                        {
+                            foreach (var item in Model.Basket.Items)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@item.Name</strong>
+                                        <br />
+                                        <small class="text-muted">₺@item.Price</small>
+                                    </div>
+                                    <img src="/pictures/courses/@item.PictureFile" alt="Product Image" class="img-thumbnail" style="max-width: 60px; height: auto;">
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item">Sepetiniz boş.</li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <h5>Toplam: <span class="text-success">₺@Model.Basket.TotalPrice</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="col-md-6">
+            <h3>Ödeme Bilgileri</h3>
+            <form asp-controller="order" asp-action="create" method="post">
+                <div class="mb-3">
+                    <label for="CardName" class="form-label">Kart Sahibinin Adı</label>
+                    <input type="text" class="form-control" id="CardName" name="CardName" value="@Model.CardName" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="CardNumber" class="form-label">Kart Numarası</label>
+                    <input type="text" class="form-control" id="CardNumber" name="CardNumber" value="@Model.CardNumber" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Expiration" class="form-label">Son Kullanma Tarihi</label>
+                        <input type="text" class="form-control" id="Expiration" name="Expiration" placeholder="MM/YY" value="@Model.Expiration" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="CVV" class="form-label">CVV</label>
+                        <input type="text" class="form-control" id="CVV" name="CVV" value="@Model.CVV" required>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Ödemeyi Tamamla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

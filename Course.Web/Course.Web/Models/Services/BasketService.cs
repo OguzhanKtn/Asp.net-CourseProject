@@ -9,9 +9,7 @@ namespace Udemy.Web.Models.Services
     {
         public async Task AddBasketItem(Guid courseId)
         {
-            var userId = contextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var cacheKey = $"Basket:{userId}";
+            string cacheKey = GetBasketCacheKey();
 
             var hasBasketCache = await cacheService.Get<BasketViewModel>(cacheKey) ?? new BasketViewModel();
 
@@ -27,15 +25,26 @@ namespace Udemy.Web.Models.Services
                 Price = basketItem.Price
             };
 
+            var hasBasketItem = hasBasketCache.Items.Any(x => x.CourseId == courseId);
+
+            if (hasBasketItem) return;
+
             hasBasketCache.Items.Add(basketItemModel);
 
             await cacheService.Set(cacheKey, hasBasketCache);
-        }   
+        }
+
+        private string GetBasketCacheKey()
+        {
+            var userId = contextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var cacheKey = $"Basket:{userId}";
+            return cacheKey;
+        }
 
         public async Task RemoveBasketItem(Guid courseId)
         {
-            var userId = contextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cacheKey = $"Basket:{userId}";
+            string cacheKey = GetBasketCacheKey();
 
             var hasBasketCache = await cacheService.Get<BasketViewModel>(cacheKey);
 
@@ -52,11 +61,25 @@ namespace Udemy.Web.Models.Services
 
         public async Task<BasketViewModel> Get()
         {
-            var userId = contextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cacheKey = $"Basket:{userId}";
+            string cacheKey = GetBasketCacheKey();
 
             var hasBasketCache = await cacheService.Get<BasketViewModel>(cacheKey) ?? new BasketViewModel();
             return hasBasketCache;
+        }
+
+        public async Task<int> GetCount()
+        {
+            string cacheKey = GetBasketCacheKey();
+
+            var hasBasketCache = await cacheService.Get<BasketViewModel>(cacheKey) ?? new BasketViewModel();
+
+            return hasBasketCache.Items!.Count();
+        }
+
+        public async Task RemoveBasketCache()
+        {
+            string cacheKey = GetBasketCacheKey();
+            await cacheService.Remove(cacheKey);
         }
     }
 }

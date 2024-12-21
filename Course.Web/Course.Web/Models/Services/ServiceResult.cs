@@ -4,7 +4,7 @@
     {
         public T? Data { get; set; }
         public List<string>? Errors { get; set; }
-
+        
         public bool IsFail => Errors is not null && Errors.Count > 0;
         public bool IsSuccess => !IsFail;
 
@@ -16,9 +16,10 @@
     public class ServiceResult
     {
         public List<string>? Errors { get; set; }
+        public string Message { get; set; }
         public bool IsFail => Errors is not null && Errors.Count > 0;
         public bool IsSuccess => !IsFail;
-        public static ServiceResult Success(string message) => new ServiceResult { };
+        public static ServiceResult Success(string message) => new ServiceResult { Message = message };
         public static ServiceResult Error(string error) => new ServiceResult { Errors = new List<string> { error } };
         public static ServiceResult Error(List<string> errors) => new ServiceResult { Errors = errors };
     }

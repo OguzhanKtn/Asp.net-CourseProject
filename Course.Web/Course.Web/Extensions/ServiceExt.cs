@@ -19,6 +19,7 @@ namespace Udemy.Web.Extensions
            Services.AddScoped<CourseService>();
            Services.AddScoped<BasketService>();
            Services.AddScoped<UserService>();
+           Services.AddScoped<OrderService>();
            Services.AddHttpContextAccessor();
            Services.AddMemoryCache();
            Services.AddStackExchangeRedisCache(x =>

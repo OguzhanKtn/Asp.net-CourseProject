@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Udemy.Web.Models.Services;
 
 namespace Udemy.Web.Controllers
 {
+    [Authorize]
     public class BasketController(BasketService basketService) : Controller
     {
         public async Task<IActionResult> Index()

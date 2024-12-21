@@ -5,12 +5,17 @@ using Udemy.Web.Models.Services;
 
 namespace Udemy.Web.Controllers
 {
-    public class HomeController(CourseService courseService) : Controller
+    public class HomeController(CourseService courseService,BasketService basketService) : Controller
     {
   
         public async Task<IActionResult> Index()
         {
             var result = await courseService.GetAllAsync();
+
+            var basketItemCount = await basketService.GetCount();
+
+            TempData["basketCount"] = basketItemCount;
+
             return View(result.Data);
         }
 
