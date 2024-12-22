@@ -1,4 +1,5 @@
-﻿using Udemy.Web.Caching;
+﻿using MassTransit;
+using Udemy.Web.Caching;
 using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.CourseRepository;
 using Udemy.Web.Models.Repository.Entities;
@@ -20,7 +21,7 @@ namespace Udemy.Web.Extensions
            Services.AddScoped<BasketService>();
            Services.AddScoped<UserService>();
            Services.AddScoped<OrderService>();
-           Services.AddHttpContextAccessor();
+            Services.AddHttpContextAccessor();
            Services.AddMemoryCache();
            Services.AddStackExchangeRedisCache(x =>
            {
@@ -46,5 +47,16 @@ namespace Udemy.Web.Extensions
                 opt.SlidingExpiration = true;
             });
         }
+
+        public static void AddRabbitMQ(this IServiceCollection Services,WebApplicationBuilder builder)
+        {
+            Services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
+                });
+            });
+        } 
     }
 }

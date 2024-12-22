@@ -1,12 +1,16 @@
-﻿using System.Security.Claims;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Identity;
+using Shared.Events;
+using System.Security.Claims;
 using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
+using Udemy.Web.Models.Services.ViewModels.Basket;
 using Udemy.Web.Models.Services.ViewModels.Order;
 
 namespace Udemy.Web.Models.Services
 {
-    public class OrderService(BasketService basketService,IGenericRepository<Order> repository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork)
+    public class OrderService(BasketService basketService,IGenericRepository<Order> repository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork,IPublishEndpoint publishEndpoint,UserManager<AppUser> userManager)
     {
         public async Task<OrderViewModel> LoadOrder()
         {
@@ -22,7 +26,7 @@ namespace Udemy.Web.Models.Services
         {
             var isPayment = true;
 
-            if (isPayment == false) 
+            if (isPayment == false)
             {
                 return ServiceResult.Error("Kredi kartından ödeme alınamadı");
             }
@@ -37,7 +41,7 @@ namespace Udemy.Web.Models.Services
                 Items = []
             };
 
-            foreach (var item in basket.Items!) 
+            foreach (var item in basket.Items!)
             {
                 newOrder.Items.Add(new OrderItem()
                 {
@@ -51,12 +55,30 @@ namespace Udemy.Web.Models.Services
             await repository.AddAsync(newOrder);
             await unitOfWork.CommitAsync();
 
+            await SendOrderCreatedEvent( userId, basket);
+
             foreach (var item in newOrder.Items.Select(x => x.CourseId))
             {
                 await basketService.RemoveBasketItem(item);
             }
 
             return ServiceResult.Success("Ödeme başarıyla gerçekleşmiştir.");
+        }
+
+        private async Task SendOrderCreatedEvent(string? userId, BasketViewModel basket)
+        {
+            List<CourseEventData> courses = new List<CourseEventData>();
+
+            foreach (var course in basket.Items!)
+            {
+                courses.Add(new CourseEventData(course.Name, course.Price.ToString("C"), $"https://localhost:7284/pictures/courses/{course.PictureFile}"));
+            }
+
+            var user = await userManager.FindByIdAsync(userId!);
+
+            var orderCreatedEvent = new OrderCreatedEvent(courses, user!.UserName!, user.Email!);
+
+            await publishEndpoint.Publish(orderCreatedEvent);
         }
     }
 }

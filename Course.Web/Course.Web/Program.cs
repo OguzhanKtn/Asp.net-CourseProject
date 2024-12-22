@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddServices();
 builder.Services.AddCookies();
+builder.Services.AddRabbitMQ(builder);
 
 var app = builder.Build();
 

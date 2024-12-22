@@ -22,4 +22,8 @@
     <Folder Include="wwwroot\pictures\courses\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared.Events\Shared.Events.csproj" />
+  </ItemGroup>
+
 </Project>
