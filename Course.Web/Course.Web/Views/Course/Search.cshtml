@@ -1,12 +1,8 @@
-﻿@model IEnumerable<CourseViewModel>
-
+﻿@model List<CourseViewModel>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Search";
 }
 
-<div class="text-center">
-    <h2>All Courses</h2>
-</div>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
@@ -29,4 +25,3 @@
         </div>
     }
 </div>
-

@@ -19,5 +19,12 @@ namespace Udemy.Web.Models.Repository.CourseRepository
         {
             return await _context.Courses.Include(x => x.Category).Where(x => x.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<List<Course>> SearchCourseAsync(string query)
+        {
+            return await _context.Courses.Include(x => x.Category)
+       .Where(c => EF.Functions.Like(c.Title, query + "%"))
+       .ToListAsync();
+        }
     }
 }

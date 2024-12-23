@@ -7,7 +7,7 @@ namespace EmailService.Consumers
     {
         public Task Consume(ConsumeContext<OrderCreatedEvent> context)
         {
-            Console.WriteLine($"Email gönderildi : {context.Message.Email}");
+            Console.WriteLine($"Notification gönderildi : {context.Message.Email}");
             return Task.CompletedTask;
         }
     }

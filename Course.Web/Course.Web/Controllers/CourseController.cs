@@ -14,5 +14,13 @@ namespace Udemy.Web.Controllers
             }
             return View(result.Data);
         }
+
+        public async Task<IActionResult> Search(string query)
+        {
+           var courses = await courseService.SearchCourseAsync(query);
+
+            return View(courses.Data);
+        }
+
     }
 }

@@ -154,6 +154,31 @@ namespace Udemy.Web.Models.Services
                 CategoryName = course.Category!.Name
             }));
         }
+        public async Task<ServiceResult<List<CourseViewModel>>> SearchCourseAsync(string query)
+        {
+            var courses = await courseRepository.SearchCourseAsync(query);
 
+            var userIds = courses.Select(c => c.CreatedBy.ToString()).Distinct().ToList();
+            var users = await userManager.Users
+                .Where(u => userIds.Contains(u.Id.ToString()))
+                .ToListAsync();
+
+            var userDictionary = users.ToDictionary(u => u.Id, u => u.GetFullName);
+
+            return ServiceHelper.CheckIfNullOrNot(courses, data => data.Select(course => new CourseViewModel
+            {
+                Id = course.Id,
+                Title = course.Title,
+                ShortDescription = course.ShortDescription,
+                PictureUrl = course.PictureUrl,
+                Price = course.Price.ToString("C"),
+                TotalHour = course.TotalHour,
+                CreatedAt = course.CreatedAt.ToLongDateString(),
+                EducatorName = userDictionary.ContainsKey(course.CreatedBy)
+                    ? userDictionary[course.CreatedBy]
+                    : "Unknown Educator",
+                CategoryName = course.Category!.Name
+            }).ToList());
+        }
     }
 }
