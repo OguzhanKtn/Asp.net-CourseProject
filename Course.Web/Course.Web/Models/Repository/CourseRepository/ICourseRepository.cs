@@ -8,5 +8,6 @@ namespace Udemy.Web.Models.Repository.CourseRepository
        Task<IEnumerable<Course>> GetCoursesAsync();
        Task<Course?> GetCourseByIdAsync(Guid id);
        Task<List<Course>> SearchCourseAsync(string query);
+       IQueryable<Course> GetFilteredCourses(string? searchTerm, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy);
     }
 }

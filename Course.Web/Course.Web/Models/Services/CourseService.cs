@@ -7,6 +7,7 @@ using Udemy.Web.Models.Repository.CourseRepository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
 using Udemy.Web.Models.Services.ViewModels.Course;
+using static MassTransit.Logging.OperationName;
 
 namespace Udemy.Web.Models.Services
 {
@@ -177,6 +178,33 @@ namespace Udemy.Web.Models.Services
                 EducatorName = userDictionary.ContainsKey(course.CreatedBy)
                     ? userDictionary[course.CreatedBy]
                     : "Unknown Educator",
+                CategoryName = course.Category!.Name
+            }).ToList());
+        }
+
+        public async Task<ServiceResult<List<CourseViewModel>>> GetFilteredCoursesAsync(string? searchTerm, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
+        {
+            var coursesQuery = courseRepository.GetFilteredCourses(searchTerm,categoryId,minPrice,maxPrice,sortBy);
+
+            var userIds = coursesQuery.Select(c => c.CreatedBy.ToString()).Distinct().ToList();
+            var users = await userManager.Users
+                .Where(u => userIds.Contains(u.Id.ToString()))
+                .ToListAsync();
+
+            var userDictionary = users.ToDictionary(u => u.Id, u => u.GetFullName);
+
+            return ServiceHelper.CheckIfNullOrNot(coursesQuery, data => data.Select(course => new CourseViewModel
+            {
+                Id = course.Id,
+                Title = course.Title,
+                ShortDescription = course.ShortDescription,
+                PictureUrl = course.PictureUrl,
+                Price = course.Price.ToString("C"),
+                TotalHour = course.TotalHour,
+                CreatedAt = course.CreatedAt.ToLongDateString(),
+                EducatorName = userDictionary.ContainsKey(course.CreatedBy)
+                   ? userDictionary[course.CreatedBy]
+                   : "Unknown Educator",
                 CategoryName = course.Category!.Name
             }).ToList());
         }

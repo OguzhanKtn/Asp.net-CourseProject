@@ -1,32 +1,75 @@
-﻿@model IEnumerable<CourseViewModel>
+﻿@using Newtonsoft.Json
+@using Udemy.Web.Models.Repository.Entities
 
+@model IEnumerable<CourseViewModel>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "All Courses";
+    var categoriesJson = TempData["categories"] as string;
+    var categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(categoriesJson);
 }
 
-<div class="text-center">
-    <h2>All Courses</h2>
-</div>
-
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <div class="card border-0 shadow-lg h-100" style="background-color: #f8f9fa;">
-                <img src="/pictures/courses/@item.PictureUrl" class="card-img-top rounded-top" alt="@item.Title" style="max-height: 180px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title text-truncate">@item.Title</h5>
-                    <p class="card-text text-muted small">@item.ShortDescription</p>
-                    <p class="card-text">
-                        <small class="text-muted d-block">Instructor: @item.EducatorName</small>
-                        <strong class="text-primary">@item.Price</strong>
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-0">
-                    <a asp-controller="course" asp-action="detail" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100">View Details</a>
-                </div>
+<div class="row">
+    <div class="col-md-2">
+        <h4>Filter Courses</h4>
+        <form asp-controller="Course" asp-action="GetFilteredCourses">
+            <div class="form-group">
+                <label for="searchTerm">Search</label>
+                <input type="text" id="searchTerm" name="SearchTerm" class="form-control"/>
             </div>
-        </div>
-    }
-</div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="CategoryId" class="form-control">
+                    <option value="">All Categories</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="minPrice">Min Price</label>
+                <input type="number" id="minPrice" name="MinPrice" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="maxPrice">Max Price</label>
+                <input type="number" id="maxPrice" name="MaxPrice" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="sortBy">Sort By</label>
+                <select id="sortBy" name="SortBy" class="form-control">
+                    <option value="newest">Newest</option>
+                    <option value="price_asc">Price (Low to High)</option>
+                    <option value="price_desc">Price (High to Low)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+        </form>
+    </div>
 
+    <div class="col-md-10">
+        <div class="text-center">
+            <h2>All Courses</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card border-0 shadow-lg h-100" style="background-color: #f8f9fa;">
+                        <img src="/pictures/courses/@item.PictureUrl" class="card-img-top rounded-top" alt="@item.Title" style="max-height: 180px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">@item.Title</h5>
+                            <p class="card-text text-muted small">@item.ShortDescription</p>
+                            <p class="card-text">
+                                <small class="text-muted d-block">Instructor: @item.EducatorName</small>
+                                <strong class="text-primary">@item.Price</strong>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a asp-controller="course" asp-action="detail" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
