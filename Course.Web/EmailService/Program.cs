@@ -6,6 +6,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OrderCreatedEventConsumer>();
+    x.AddConsumer<UserCreatedEventConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -14,6 +15,7 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("email.service-order.created.event-queue", e =>
         {
             e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
+            e.ConfigureConsumer<UserCreatedEventConsumer>(context);
         });
     });
 

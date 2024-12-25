@@ -10,6 +10,11 @@ namespace Udemy.Web.Caching
           return Task.FromResult(memoryCache.Get<T>(key));
         }
 
+        public Task<string> Get(string key)
+        {
+            return Task.FromResult(memoryCache.Get(key).ToString());
+        }
+
         public Task Remove(string key)
         {
             memoryCache.Remove(key);

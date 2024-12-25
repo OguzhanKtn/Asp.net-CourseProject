@@ -4,8 +4,8 @@
     {
         public Guid Id { get; set; }
         public List<BasketItemViewModel>? Items { get; set; }
-
-        public decimal TotalPrice => Items?.Sum(x => x.Price) ?? 0;
+        public decimal TotalPrice {  get; set; }
+       
     }
 
 }

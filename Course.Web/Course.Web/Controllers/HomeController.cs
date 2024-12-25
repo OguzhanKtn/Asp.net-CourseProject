@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 namespace Udemy.Web.Controllers
 {
-    public class HomeController(CourseService courseService,BasketService basketService,IGenericRepository<Category> repository) : Controller
+    public class HomeController(CourseService courseService, BasketService basketService, IGenericRepository<Category> repository) : Controller
     {
-  
+
         public async Task<IActionResult> Index()
         {
             var result = await courseService.GetAllAsync();
@@ -38,5 +38,6 @@ namespace Udemy.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

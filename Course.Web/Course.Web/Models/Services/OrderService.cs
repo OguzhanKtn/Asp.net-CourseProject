@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Shared.Events;
 using System.Security.Claims;
+using Udemy.Web.Caching;
 using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
@@ -10,7 +11,7 @@ using Udemy.Web.Models.Services.ViewModels.Order;
 
 namespace Udemy.Web.Models.Services
 {
-    public class OrderService(BasketService basketService,IGenericRepository<Order> repository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork,IPublishEndpoint publishEndpoint,UserManager<AppUser> userManager)
+    public class OrderService(BasketService basketService,IGenericRepository<Order> repository,IHttpContextAccessor contextAccessor,IUnitOfWork unitOfWork,IPublishEndpoint publishEndpoint,UserManager<AppUser> userManager,ICacheService cacheService)
     {
         public async Task<OrderViewModel> LoadOrder()
         {
@@ -62,6 +63,8 @@ namespace Udemy.Web.Models.Services
                 await basketService.RemoveBasketItem(item);
             }
 
+            await RemoveCouponCode(userId);
+
             return ServiceResult.Success("Ödeme başarıyla gerçekleşmiştir.");
         }
 
@@ -79,6 +82,19 @@ namespace Udemy.Web.Models.Services
             var orderCreatedEvent = new OrderCreatedEvent(courses, user!.UserName!, user.Email!);
 
             await publishEndpoint.Publish(orderCreatedEvent);
+        }
+
+        private async Task RemoveCouponCode(string? userId)
+        {
+            var cacheKey = $"Discount:{userId}";
+
+            var coupon = await cacheService.Get(cacheKey);
+
+            if (coupon != null) 
+            { 
+                await cacheService.Remove(cacheKey);
+            }
+
         }
     }
 }

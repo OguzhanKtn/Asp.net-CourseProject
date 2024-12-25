@@ -14,12 +14,12 @@
         <form asp-controller="Course" asp-action="GetFilteredCourses">
             <div class="form-group">
                 <label for="searchTerm">Search</label>
-                <input type="text" id="searchTerm" name="SearchTerm" class="form-control"/>
+                <input type="text" name="SearchTerm" class="form-control"/>
             </div>
             <div class="form-group">
                 <label for="category">Category</label>
-                <select id="category" name="CategoryId" class="form-control">
-                    <option value="">All Categories</option>
+                <select name="CategoryId" class="form-control">
+                    <option>All Categories</option>
                     @foreach (var category in categories)
                     {
                         <option value="@category.Id">@category.Name</option>
@@ -28,15 +28,15 @@
             </div>
             <div class="form-group">
                 <label for="minPrice">Min Price</label>
-                <input type="number" id="minPrice" name="MinPrice" class="form-control" />
+                <input type="number" name="MinPrice" class="form-control" />
             </div>
             <div class="form-group">
                 <label for="maxPrice">Max Price</label>
-                <input type="number" id="maxPrice" name="MaxPrice" class="form-control" />
+                <input type="number" name="MaxPrice" class="form-control" />
             </div>
             <div class="form-group">
                 <label for="sortBy">Sort By</label>
-                <select id="sortBy" name="SortBy" class="form-control">
+                <select name="SortBy" class="form-control">
                     <option value="newest">Newest</option>
                     <option value="price_asc">Price (Low to High)</option>
                     <option value="price_desc">Price (High to Low)</option>

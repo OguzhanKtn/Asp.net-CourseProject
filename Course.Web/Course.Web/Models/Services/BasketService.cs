@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Udemy.Web.Caching;
 using Udemy.Web.Models.Repository.CourseRepository;
+using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Services.ViewModels.Basket;
 
 namespace Udemy.Web.Models.Services
@@ -22,7 +23,7 @@ namespace Udemy.Web.Models.Services
                 CourseId = courseId,
                 Name = basketItem!.Title,
                 PictureFile = basketItem.PictureUrl,
-                Price = basketItem.Price
+                Price = basketItem.Price,
             };
 
             var hasBasketItem = hasBasketCache.Items.Any(x => x.CourseId == courseId);
@@ -30,6 +31,8 @@ namespace Udemy.Web.Models.Services
             if (hasBasketItem) return;
 
             hasBasketCache.Items.Add(basketItemModel);
+
+            hasBasketCache.TotalPrice = hasBasketCache.Items.Select(x => x.Price).Sum();
 
             await cacheService.Set(cacheKey, hasBasketCache);
         }
@@ -73,13 +76,39 @@ namespace Udemy.Web.Models.Services
 
             var hasBasketCache = await cacheService.Get<BasketViewModel>(cacheKey) ?? new BasketViewModel();
 
-            return hasBasketCache.Items!.Count();
+            var items = hasBasketCache.Items ?? new List<BasketItemViewModel>();
+
+            return items.Count();
         }
 
         public async Task RemoveBasketCache()
         {
             string cacheKey = GetBasketCacheKey();
             await cacheService.Remove(cacheKey);
+        }
+
+        public async Task<ServiceResult> ApplyDiscount(string couponCode)
+        {
+            var userId = contextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"Discount:{userId}";
+
+            string userDiscountCode = await cacheService.Get<string>(cacheKey) ?? "Kod bulunamadı";
+
+            if (userDiscountCode == couponCode) 
+            {
+                var basket = await Get();
+
+                if (basket != null)
+                {
+                    basket.TotalPrice = (basket.TotalPrice) - (basket.TotalPrice * 0.20m);
+                    string cache = GetBasketCacheKey();
+                    await cacheService.Set(cache, basket);
+
+                    return ServiceResult.Success("İndirim Uygulandı");
+                }
+            }
+
+            return ServiceResult.Error("İndirim Uygulanamadı");
         }
     }
 }

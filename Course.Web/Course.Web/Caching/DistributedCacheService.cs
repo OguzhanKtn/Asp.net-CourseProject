@@ -18,6 +18,19 @@ namespace Udemy.Web.Caching
             return value;
         }
 
+        public async Task<string> Get(string key)
+        {
+            var valueAsJsonString = await distributedCache.GetStringAsync(key);
+
+            if (string.IsNullOrEmpty(valueAsJsonString))
+            {
+                return string.Empty;
+            }
+
+            var value = JsonSerializer.Deserialize<string>(valueAsJsonString);
+            return value;
+        }
+
         public async Task Remove(string key)
         {
             await distributedCache.RemoveAsync(key);

@@ -5,7 +5,7 @@ using Udemy.Web.Models.Services;
 namespace Udemy.Web.Controllers
 {
     [Authorize]
-    public class BasketController(BasketService basketService) : Controller
+    public class BasketController(BasketService basketService) : BaseController
     {
         public async Task<IActionResult> Index()
         {
@@ -20,6 +20,17 @@ namespace Udemy.Web.Controllers
         {
             await basketService.RemoveBasketItem(id);
             return RedirectToAction("Index", "Basket");
+        }
+
+        public async Task<IActionResult> ApplyCoupon(string couponCode)
+        {
+            var result = await basketService.ApplyDiscount(couponCode);
+
+            SuccessOrFail(result,result.Message);
+
+            var basket = await basketService.Get();
+
+            return RedirectToAction("Index",basket);
         }
     }
 }

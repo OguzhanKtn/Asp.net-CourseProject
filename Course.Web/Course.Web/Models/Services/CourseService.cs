@@ -7,7 +7,6 @@ using Udemy.Web.Models.Repository.CourseRepository;
 using Udemy.Web.Models.Repository.Entities;
 using Udemy.Web.Models.Repository.UnitOfWork;
 using Udemy.Web.Models.Services.ViewModels.Course;
-using static MassTransit.Logging.OperationName;
 
 namespace Udemy.Web.Models.Services
 {

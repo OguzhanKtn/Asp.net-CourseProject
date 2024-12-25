@@ -4,6 +4,7 @@
     {
         Task Set<T>(string key, T value);
         Task<T?> Get<T>(string key);
+        Task<string> Get(string key);
         Task Remove(string key);
     }
 }
