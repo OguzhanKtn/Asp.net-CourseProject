@@ -20,7 +20,7 @@ namespace Udemy.Web.Controllers
             var categories = await repository.GetAllAsync();
             TempData["categories"] = JsonConvert.SerializeObject(categories, new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore  // Döngüsel referanslarý yok say
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore 
             });
 
             TempData["basketCount"] = basketItemCount;

@@ -28,14 +28,9 @@ namespace Udemy.Web.Models.Repository.CourseRepository
                 .ToListAsync();
         }
 
-        public IQueryable<Course> GetFilteredCourses(string? searchTerm, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
+        public IQueryable<Course> GetFilteredCourses(int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
         {
             var query = _context.Courses.AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(c => EF.Functions.Like(c.Title, $"%{searchTerm}%"));
-            }
 
             if (categoryId.HasValue)
             {

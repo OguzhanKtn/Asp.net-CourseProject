@@ -21,5 +21,10 @@ namespace Udemy.Web.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            return View();
+        }
     }
 }

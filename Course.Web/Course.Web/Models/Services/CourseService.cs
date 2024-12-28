@@ -181,9 +181,9 @@ namespace Udemy.Web.Models.Services
             }).ToList());
         }
 
-        public async Task<ServiceResult<List<CourseViewModel>>> GetFilteredCoursesAsync(string? searchTerm, int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
+        public async Task<ServiceResult<List<CourseViewModel>>> GetFilteredCoursesAsync(int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
         {
-            var coursesQuery = courseRepository.GetFilteredCourses(searchTerm,categoryId,minPrice,maxPrice,sortBy);
+            var coursesQuery = courseRepository.GetFilteredCourses(categoryId,minPrice,maxPrice,sortBy);
 
             var userIds = coursesQuery.Select(c => c.CreatedBy.ToString()).Distinct().ToList();
             var users = await userManager.Users
