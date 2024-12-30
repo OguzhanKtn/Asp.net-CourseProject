@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Udemy.Web.Extensions;
+using Udemy.Web.Hubs;
 using Udemy.Web.Models.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddServices();
 builder.Services.AddCookies();
 builder.Services.AddRabbitMQ(builder);
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -39,5 +41,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapHub<SignalRHub>("/signalrhub");
 
 app.Run();

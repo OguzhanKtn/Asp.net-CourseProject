@@ -1,7 +1,6 @@
 ﻿@{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,35 +38,27 @@
             <h2>Dashboard</h2>
             <div class="row mt-4">
                 <!-- Statistics Cards -->
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-primary mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">Total Users</h5>
-                            <p class="card-text fs-4">1,250</p>
+                            <h5 class="card-title">Total Educators</h5>
+                            <p class="card-text fs-4" id="educatorCount"></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-success mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Revenue</h5>
-                            <p class="card-text fs-4">$75,000</p>
+                            <p class="card-text fs-4" id="revenue"></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-danger mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">Pending Orders</h5>
-                            <p class="card-text fs-4">57</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-warning mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Feedbacks</h5>
-                            <p class="card-text fs-4">320</p>
+                            <h5 class="card-title">Total Courses</h5>
+                            <p class="card-text fs-4" id="courseCount"></p>
                         </div>
                     </div>
                 </div>
@@ -84,39 +75,58 @@
                             <tr>
                                 <th>#</th>
                                 <th>Customer</th>
-                                <th>Product</th>
+                                <th>Order Code</th>
                                 <th>Status</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>John Doe</td>
-                                <td>MacBook Pro</td>
-                                <td><span class="badge bg-success">Completed</span></td>
-                                <td>$2,500</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Jane Smith</td>
-                                <td>iPhone 13</td>
-                                <td><span class="badge bg-warning">Pending</span></td>
-                                <td>$1,200</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Mike Johnson</td>
-                                <td>AirPods Pro</td>
-                                <td><span class="badge bg-danger">Cancelled</span></td>
-                                <td>$250</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="customers"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.5/dist/browser/signalr.min.js"></script>
+    <script>
+        // SignalR connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/signalrhub")
+            .build();
+
+             connection.start().then(() => {
+                    setInterval(() => {
+                        connection.invoke("Statistics");
+                    }, 1000)
+                }).catch((err) => { console.log(err) });
+
+        connection.on("EducatorCount", function (count) {
+            document.getElementById("educatorCount").textContent = count;
+        });
+
+        connection.on("Revenue", function (revenue) {
+            document.getElementById("revenue").textContent = revenue;
+        });
+
+        connection.on("CourseCount", function (count) {
+            document.getElementById("courseCount").textContent = count;
+        });
+
+        connection.on("CustomerInfo", function (customers) {
+            const customersTable = document.getElementById("customers");
+            customersTable.innerHTML = ""; // Clear table
+            customers.forEach((customer, index) => {
+                const row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${customer.userInfo}</td>
+                    <td>${customer.orderCode}</td>
+                    <td><span class="badge bg-success">Completed</span></td>
+                    <td>${customer.price}</td>
+                </tr>`;
+                customersTable.innerHTML += row;
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

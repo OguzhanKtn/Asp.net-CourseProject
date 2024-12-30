@@ -8,64 +8,89 @@
     var categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(categoriesJson);
 }
 
-<div class="row">
-    <div class="col-md-2">
-        <h4>Filter Courses</h4>
-        <form asp-controller="Course" asp-action="GetFilteredCourses">
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select name="CategoryId" class="form-control">
-                    <option>All Categories</option>
-                    @foreach (var category in categories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </select>
+<div class="text-center mb-4">
+    <h2>All Courses</h2>
+</div>
+
+<!-- Filters Section -->
+<div class="row mb-4">
+    <div class="col">
+        <form id="filterForm" asp-controller="Course" asp-action="GetFilteredCourses" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="CategoryId" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="minPrice" class="form-label">Min Price</label>
+                    <input id="minPrice" type="number" name="MinPrice" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label for="maxPrice" class="form-label">Max Price</label>
+                    <input id="maxPrice" type="number" name="MaxPrice" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label for="sortBy" class="form-label">Sort By</label>
+                    <select id="sortBy" name="SortBy" class="form-select">
+                        <option value="newest">Newest</option>
+                        <option value="price_asc">Price (Low to High)</option>
+                        <option value="price_desc">Price (High to Low)</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="minPrice">Min Price</label>
-                <input type="number" name="MinPrice" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="maxPrice">Max Price</label>
-                <input type="number" name="MaxPrice" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="sortBy">Sort By</label>
-                <select name="SortBy" class="form-control">
-                    <option value="newest">Newest</option>
-                    <option value="price_asc">Price (Low to High)</option>
-                    <option value="price_desc">Price (High to Low)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
         </form>
     </div>
-
-    <div class="col-md-10">
-        <div class="text-center">
-            <h2>All Courses</h2>
-        </div>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @foreach (var item in Model)
-            {
-                <div class="col">
-                    <div class="card border-0 shadow-lg h-100" style="background-color: #f8f9fa;">
-                        <img src="/pictures/courses/@item.PictureUrl" class="card-img-top rounded-top" alt="@item.Title" style="max-height: 180px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title text-truncate">@item.Title</h5>
-                            <p class="card-text text-muted small">@item.ShortDescription</p>
-                            <p class="card-text">
-                                <small class="text-muted d-block">Instructor: @item.EducatorName</small>
-                                <strong class="text-primary">@item.Price</strong>
-                            </p>
-                        </div>
-                        <div class="card-footer bg-white border-0">
-                            <a asp-controller="course" asp-action="detail" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
 </div>
+
+<!-- Courses List -->
+<div class="row row-cols-1 row-cols-md-3 g-4" id="coursesContainer">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card border-0 shadow-lg h-100" style="background-color: #f8f9fa;">
+                <img src="/pictures/courses/@item.PictureUrl" class="card-img-top rounded-top" alt="@item.Title" style="max-height: 180px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title text-truncate">@item.Title</h5>
+                    <p class="card-text text-muted small">@item.ShortDescription</p>
+                    <p class="card-text">
+                        <small class="text-muted d-block">Instructor: @item.EducatorName</small>
+                        <strong class="text-primary">@item.Price</strong>
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a asp-controller="course" asp-action="detail" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#category').on('change', function () {
+            applyFilters();
+        });
+
+         $('#sortBy').on('change', function () {
+            applyFilters();
+        });
+
+         $('#minPrice, #maxPrice').on('keypress', function (e) {
+            if (e.which === 13) { 
+                $('#filterForm').submit(); 
+            }
+        });
+
+         function applyFilters() {
+            var formData = $('#filterForm').serialize();
+            window.location.href = '@Url.Action("GetFilteredCourses", "Course")?' + formData;
+        }
+    });
+</script>
