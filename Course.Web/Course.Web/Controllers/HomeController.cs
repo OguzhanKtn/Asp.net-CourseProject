@@ -11,9 +11,9 @@ namespace Udemy.Web.Controllers
     public class HomeController(CourseService courseService, BasketService basketService, IGenericRepository<Category> repository) : Controller
     {
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
         {
-            var result = await courseService.GetAllAsync();
+            var result = await courseService.GetFilteredCoursesAsync(categoryId, minPrice, maxPrice, sortBy);
 
             var basketItemCount = await basketService.GetCount();
 

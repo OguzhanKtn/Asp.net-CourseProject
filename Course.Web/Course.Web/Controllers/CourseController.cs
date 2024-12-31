@@ -21,12 +21,5 @@ namespace Udemy.Web.Controllers
 
             return View(courses.Data);
         }
-
-        public async Task<IActionResult> GetFilteredCourses(int? categoryId, decimal? minPrice, decimal? maxPrice, string? sortBy)
-        {
-            var courses = await courseService.GetFilteredCoursesAsync(categoryId, minPrice, maxPrice, sortBy);
-
-            return View(courses.Data);
-        }
     }
 }
