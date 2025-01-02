@@ -7,9 +7,8 @@
 
 <div class="container mt-5">
     <div class="row">
-        <!-- Basket Details -->
         <div class="col-md-6">
-            <h3>Sepet Detayları</h3>
+            <h3>Basket Details</h3>
             <div class="card">
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
@@ -34,28 +33,27 @@
                     </ul>
                 </div>
                 <div class="card-footer text-end">
-                    <h5>Toplam: <span class="text-success">₺@Model.Basket.TotalPrice</span></h5>
+                    <h5>Total: <span class="text-success">₺@Model.Basket.TotalPrice</span></h5>
                 </div>
             </div>
         </div>
 
-        <!-- Payment Form -->
         <div class="col-md-6">
-            <h3>Ödeme Bilgileri</h3>
+            <h3>Payment Form</h3>
             <form asp-controller="order" asp-action="create" method="post">
                 <div class="mb-3">
-                    <label for="CardName" class="form-label">Kart Sahibinin Adı</label>
+                    <label for="CardName" class="form-label">Cardholder</label>
                     <input type="text" class="form-control" id="CardName" name="CardName" value="@Model.CardName" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="CardNumber" class="form-label">Kart Numarası</label>
+                    <label for="CardNumber" class="form-label">Card Number</label>
                     <input type="text" class="form-control" id="CardNumber" name="CardNumber" value="@Model.CardNumber" required>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="Expiration" class="form-label">Son Kullanma Tarihi</label>
+                        <label for="Expiration" class="form-label">Expiration Date</label>
                         <input type="text" class="form-control" id="Expiration" name="Expiration" placeholder="MM/YY" value="@Model.Expiration" required>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -65,7 +63,7 @@
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Ödemeyi Tamamla</button>
+                    <button type="submit" class="btn btn-primary">Complete Payment</button>
                 </div>
             </form>
         </div>
