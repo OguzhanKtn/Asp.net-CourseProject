@@ -10,7 +10,7 @@ namespace Udemy.Web.Controllers
             var result = await courseService.GetCourseByIdAsync(id);
             if (result.IsFail)
             {
-                //Todo: error page will be configured
+                return RedirectToAction("Error500","Error");
             }
             return View(result.Data);
         }

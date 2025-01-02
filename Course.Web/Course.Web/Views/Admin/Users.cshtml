@@ -1,0 +1,119 @@
+﻿@model List<UserViewModel>
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+    int count = 0;
+}
+
+<h1>Users</h1>
+
+<div class="card mt-4">
+    <div class="card-header">
+        Users
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Roles</th>
+                    <th>Add Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    count++;
+                    <tr>
+                        <th>@count</th>
+                        <td>@user.UserName</td>
+                        <td>
+                            @if (user.Roles != null && user.Roles.Any())
+                            {
+                                @string.Join(", ", user.Roles)
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Roles</span>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal" data-userid="@user.UserId" data-username="@user.UserName">
+                                Add Role
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Role Modal -->
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roleModalLabel">Add Role to User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addRoleForm">
+                    <input type="hidden" id="userId" name="userId" />
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">User Name</label>
+                        <input type="text" id="userName" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="roleSelect" class="form-label">Select Role</label>
+                        <select id="roleSelect" name="role" class="form-select">
+                            @foreach (var role in ViewBag.Roles)
+                            {
+                                <option value="@role">@role</option>
+                            }
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="addRoleBtn">Add Role</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const roleModal = document.getElementById("roleModal");
+            roleModal.addEventListener("show.bs.modal", function (event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute("data-userid");
+                const userName = button.getAttribute("data-username");
+
+                document.getElementById("userId").value = userId;
+                document.getElementById("userName").value = userName;
+            });
+
+            document.getElementById("addRoleBtn").addEventListener("click", function () {
+                const formData = new FormData(document.getElementById("addRoleForm"));
+                fetch("/Admin/AddRoleToUser", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Role added successfully!");
+                        location.reload(); 
+                    } else {
+                        alert("Failed to add role: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    </script>
+}

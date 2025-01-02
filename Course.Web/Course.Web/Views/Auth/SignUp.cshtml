@@ -19,35 +19,40 @@
                         <div class="mb-3">
                             @Html.LabelFor(m => m.FirstName, new { @class = "form-label" })
                             @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Enter your first name", @required = "required" })
-                            @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                     
+                            <span asp-validation-for="FirstName" class="text-danger"></span> <!-- Validation message -->
                         </div>
 
                         <!-- Last Name -->
                         <div class="mb-3">
                             @Html.LabelFor(m => m.LastName, new { @class = "form-label" })
                             @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Enter your last name", @required = "required" })
-                            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                           
+                            <span asp-validation-for="LastName" class="text-danger"></span> <!-- Validation message -->
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             @Html.LabelFor(m => m.Email, new { @class = "form-label" })
                             @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Enter your email", @required = "required" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                           
+                            <span asp-validation-for="Email" class="text-danger"></span> <!-- Validation message -->
                         </div>
 
                         <!-- Password -->
                         <div class="mb-3">
                             @Html.LabelFor(m => m.Password, new { @class = "form-label" })
                             @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password", @required = "required" })
-                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                           
+                            <span asp-validation-for="Password" class="text-danger"></span> <!-- Validation message -->
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="mb-3">
                             @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
                             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm your password", @required = "required" })
-                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                            
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span> <!-- Validation message -->
                         </div>
 
                         <!-- Submit Button -->
@@ -60,5 +65,3 @@
         </div>
     </div>
 </div>
-
-

@@ -1,4 +1,7 @@
-﻿using MassTransit;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using MassTransit;
+using System.Reflection;
 using Udemy.Web.Caching;
 using Udemy.Web.Models.Repository;
 using Udemy.Web.Models.Repository.CourseRepository;
@@ -60,5 +63,12 @@ namespace Udemy.Web.Extensions
                 });
             });
         } 
+
+        public static void AddFluentValidation(this IServiceCollection Services)
+        {
+            Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            Services.AddFluentValidationAutoValidation();
+            Services.AddFluentValidationClientsideAdapters();
+        }
     }
 }
