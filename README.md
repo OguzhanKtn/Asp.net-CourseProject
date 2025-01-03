@@ -7,7 +7,9 @@ This project aims to provide a platform where users can browse and filter course
 - **Course Listing**: View all courses on the homepage.
 - **Filtering**: Filter courses by category and price range.
 - **User Registration**: Register to the system and receive a one-time discount coupon via RabbitMQ after registration.
-- **Redis-Backed Coupon and Cart System**: Coupons are stored in the Redis database and deleted after the order is completed. Courses added to the cart are stored in Redis.
+- **Redis-Backed Coupon and Cart System**:
+  - Coupons are stored in the Redis database and deleted after the order is completed.
+  - Courses added to the cart are stored in Redis.
 - **Admin Panel**:
   - Real-time statistics tracking on the dashboard using SignalR.
   - Total courses, total sales, total instructors, and a list of orders.
